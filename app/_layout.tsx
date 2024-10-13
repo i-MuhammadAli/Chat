@@ -81,10 +81,12 @@ export default function RootLayout() {
               initialRouteName='login'
               screenOptions={{
                 headerBackTitle: 'Back',
-                headerTitle(props) {
-                  return <Text className='text-xl font-semibold'>{toOptions(props.children)}</Text>;
-                },
-                headerRight: () => <ThemeToggle />,
+                headerShown: false,
+
+                // headerTitle(props) {
+                //   return <Text className='text-xl font-semibold'>{toOptions(props.children)}</Text>;
+                // },
+                // headerRight: () => <ThemeToggle />,
               }}
             >
               <Stack.Screen

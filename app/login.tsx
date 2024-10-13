@@ -22,9 +22,9 @@ import { Link, useRouter } from 'expo-router';
 import { Label } from '~/components/ui/label';
 
 export default function Login() {
-  const { isDarkColorScheme } = useColorScheme();
   const router = useRouter();
   const dispatch = useDispatch();
+  const { isDarkColorScheme } = useColorScheme();
   const { isLoading } = useSelector((state: any) => state.auth);
 
   const [email, setEmail] = React.useState<string>('1@gmail.com');
@@ -67,7 +67,12 @@ export default function Login() {
           <Label nativeID='password' className='mb-2'>
             Password
           </Label>
-          <Input placeholder='Enter your password' value={password} onChangeText={setPassword} />
+          <Input
+            placeholder='Enter your password'
+            secureTextEntry={true}
+            value={password}
+            onChangeText={setPassword}
+          />
         </View>
         <Button onPress={handleLogin} disabled={!email || !password || isLoading}>
           {isLoading ? (

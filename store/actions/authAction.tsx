@@ -22,10 +22,9 @@ export const register: any = ({ email, password, onSuccess = () => {} }) => {
       const payload = {
         uid: user?.uid,
         email: user?.email,
-        createdAt: new Date(),
-        contactRequestsSent: [],
-        contactRequestsReceived: [],
+        role: 'user',
         contacts: [],
+        createdAt: new Date(),
       };
       await setDoc(doc(db, 'users', user?.uid), payload);
       await AsyncStorage.setItem('user', JSON.stringify(payload));

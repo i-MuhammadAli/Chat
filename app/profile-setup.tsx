@@ -46,6 +46,7 @@ export default function ProfileSetup() {
   const handleProfileSetup = () => {
     const profileData = {
       username,
+      about,
     };
     if (user?.uid) {
       dispatch(

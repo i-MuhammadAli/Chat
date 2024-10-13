@@ -21,6 +21,17 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name='contacts-old'
+        options={{
+          title: 'Contacts Old',
+          tabBarIcon({ color, size }) {
+            return <Users color={color} size={size} />;
+          },
+          headerLeft: () => <ModalToggle />,
+          headerRight: () => <ThemeToggle />,
+        }}
+      />
+      <Tabs.Screen
         name='contacts'
         options={{
           title: 'Contacts',

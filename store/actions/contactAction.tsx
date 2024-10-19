@@ -13,77 +13,141 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 
-export const fetchFriendRequests: any = (uid: string) => {
+// export const fetchFriendRequests: any = (uid: string) => {
+//   return (dispatch: Dispatch) => {
+//     try {
+//       const requestsRef = collection(db, 'requests');
+//       const q = query(requestsRef, where('recipientUid', '==', uid));
+
+//       onSnapshot(
+//         q,
+//         (querySnapshot) => {
+//           const friendRequests = [];
+//           querySnapshot.forEach((doc) => {
+//             friendRequests.push({ id: doc.id, ...doc.data() });
+//           });
+//           dispatch({
+//             type: 'FRIEND_REQUESTS_SUCCESS',
+//             payload: friendRequests,
+//           });
+//         },
+//         (error) => {
+//           Toast.show({
+//             type: 'error',
+//             text1: 'Error!',
+//             text2: error.message || 'Failed to fetch friend requests',
+//           });
+//         }
+//       );
+//     } catch (error) {
+//       Toast.show({
+//         type: 'error',
+//         text1: 'Error!',
+//         text2: error.message || 'Failed to fetch friend requests',
+//       });
+//     }
+//   };
+// };
+
+// export const fetchSentFriendRequests: any = (uid: string) => {
+//   return (dispatch: Dispatch) => {
+//     try {
+//       const requestsRef = collection(db, 'requests');
+//       const q = query(requestsRef, where('senderUid', '==', uid));
+
+//       onSnapshot(
+//         q,
+//         (querySnapshot) => {
+//           const sentRequests = [];
+//           querySnapshot.forEach((doc) => {
+//             sentRequests.push({ id: doc.id, ...doc.data() });
+//           });
+//           dispatch({
+//             type: 'SENT_FRIEND_REQUESTS_SUCCESS',
+//             payload: sentRequests,
+//           });
+//         },
+//         (error) => {
+//           Toast.show({
+//             type: 'error',
+//             text1: 'Error!',
+//             text2: error.message || 'Failed to fetch sent friend requests',
+//           });
+//         }
+//       );
+//     } catch (error) {
+//       Toast.show({
+//         type: 'error',
+//         text1: 'Error!',
+//         text2: error.message || 'Failed to fetch sent friend requests',
+//       });
+//     }
+//   };
+// };
+
+interface FetchFriendRequestsParams {
+  uid: string;
+  type: 'received' | 'sent';
+}
+
+export const fetchRequests: any = (uid: string) => {
   return (dispatch: Dispatch) => {
     try {
       const requestsRef = collection(db, 'requests');
-      const q = query(requestsRef, where('recipientUid', '==', uid));
+      // Query for received friend requests
+      const receivedQuery = query(requestsRef, where('recipientUid', '==', uid));
+      // Query for sent friend requests
+      const sentQuery = query(requestsRef, where('senderUid', '==', uid));
 
-      onSnapshot(
-        q,
-        (querySnapshot) => {
-          const friendRequests = [];
-          querySnapshot.forEach((doc) => {
-            friendRequests.push({ id: doc.id, ...doc.data() });
-          });
-          console.log('friendRequests: ', friendRequests);
+      const receivedRequests: any[] = [];
+      const sentRequests: any[] = [];
 
+      // Use Promise.all to fetch both sent and received requests in parallel
+      Promise.all([
+        new Promise<void>((resolve, reject) => {
+          onSnapshot(
+            receivedQuery,
+            (querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                receivedRequests.push({ id: doc.id, ...doc.data() });
+              });
+              resolve();
+            },
+            reject
+          );
+        }),
+        new Promise<void>((resolve, reject) => {
+          onSnapshot(
+            sentQuery,
+            (querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                sentRequests.push({ id: doc.id, ...doc.data() });
+              });
+              resolve();
+            },
+            reject
+          );
+        }),
+      ])
+        .then(() => {
+          // Dispatch both received and sent friend requests
           dispatch({
             type: 'FRIEND_REQUESTS_SUCCESS',
-            payload: friendRequests,
+            payload: { receivedRequests, sentRequests },
           });
-        },
-        (error) => {
+        })
+        .catch((error) => {
           Toast.show({
             type: 'error',
             text1: 'Error!',
             text2: error.message || 'Failed to fetch friend requests',
           });
-        }
-      );
+        });
     } catch (error) {
       Toast.show({
         type: 'error',
         text1: 'Error!',
         text2: error.message || 'Failed to fetch friend requests',
-      });
-    }
-  };
-};
-
-export const fetchSentFriendRequests: any = (uid: string) => {
-  return (dispatch: Dispatch) => {
-    try {
-      const requestsRef = collection(db, 'requests');
-      const q = query(requestsRef, where('senderUid', '==', uid));
-
-      onSnapshot(
-        q,
-        (querySnapshot) => {
-          const sentRequests = [];
-          querySnapshot.forEach((doc) => {
-            sentRequests.push({ id: doc.id, ...doc.data() });
-          });
-          console.log('sentRequests: ', sentRequests);
-
-          dispatch({
-            type: 'SENT_FRIEND_REQUESTS_SUCCESS',
-            payload: sentRequests,
-          });
-        },
-        (error) => {
-          Toast.show({
-            type: 'error',
-            text1: 'Error!',
-            text2: error.message || 'Failed to fetch sent friend requests',
-          });
-        }
-      );
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error!',
-        text2: error.message || 'Failed to fetch sent friend requests',
       });
     }
   };

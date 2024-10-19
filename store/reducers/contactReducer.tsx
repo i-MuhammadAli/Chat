@@ -7,9 +7,13 @@ const initialState = {
 const contactReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case 'FRIEND_REQUESTS_SUCCESS':
-      return { ...state, friendRequests: action.payload };
-    case 'SENT_FRIEND_REQUESTS_SUCCESS':
-      return { ...state, sentRequests: action.payload };
+      return {
+        ...state,
+        friendRequests: action.payload.receivedRequests,
+        sentRequests: action.payload.sentRequests,
+      };
+    // case 'SENT_FRIEND_REQUESTS_SUCCESS':
+    //   return { ...state, sentRequests: action.payload };
     default:
       return state;
   }

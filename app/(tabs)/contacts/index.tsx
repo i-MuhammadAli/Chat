@@ -21,7 +21,12 @@ import { useColorScheme } from '~/lib/useColorScheme';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { useDispatch, useSelector } from 'react-redux';
-import { sendFriendRequest } from '~/store/actions/contactAction';
+import {
+  fetchRequests,
+  // fetchFriendRequests,
+  // fetchSentFriendRequests,
+  sendFriendRequest,
+} from '~/store/actions/contactAction';
 
 const contacts = [
   {
@@ -96,6 +101,14 @@ export default function Contacts() {
       })
     );
   };
+
+  React.useEffect(() => {
+    if (user?.uid) {
+      dispatch(fetchRequests(user?.uid));
+      // dispatch(fetchFriendRequests(user?.uid));
+      // dispatch(fetchSentFriendRequests(user?.uid));
+    }
+  }, []);
 
   return (
     <>

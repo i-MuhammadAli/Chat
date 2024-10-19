@@ -21,11 +21,7 @@ import { useColorScheme } from '~/lib/useColorScheme';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  deleteFriendRequest,
-  fetchSentFriendRequests,
-  sendFriendRequest,
-} from '~/store/actions/contactAction';
+import { deleteFriendRequest } from '~/store/actions/contactAction';
 import { Check } from '~/lib/icons/Check';
 import { X } from '~/lib/icons/X';
 
@@ -43,12 +39,6 @@ export default function Contacts() {
       })
     );
   };
-
-  React.useEffect(() => {
-    if (user?.uid) {
-      dispatch(fetchSentFriendRequests(user?.uid));
-    }
-  }, []);
 
   return (
     <>
